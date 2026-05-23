@@ -10,7 +10,8 @@ const Dashboard = ({
   onAddTaskClick,
   onTaskMove,
   onDeleteTask,
-  searchQuery
+  searchQuery,
+  setActiveTab
 }) => {
   const [priorityFilter, setPriorityFilter] = useState('all');
 
@@ -49,16 +50,16 @@ const Dashboard = ({
                   onChange={(e) => setPriorityFilter(e.target.value)}
                   className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer"
                 >
-                  <option value="all">🌐 All Priorities</option>
-                  <option value="high">🔴 High</option>
-                  <option value="medium">🟡 Medium</option>
-                  <option value="low">🟢 Low</option>
+                  <option value="all" className="bg-[#1e293b] text-slate-200">🌐 All Priorities</option>
+                  <option value="high" className="bg-[#1e293b] text-slate-200">🔴 High</option>
+                  <option value="medium" className="bg-[#1e293b] text-slate-200">🟡 Medium</option>
+                  <option value="low" className="bg-[#1e293b] text-slate-200">🟢 Low</option>
                 </select>
               </div>
             </div>
 
             {/* Statistics Row */}
-            <DashboardCards tasks={tasks} />
+            <DashboardCards tasks={tasks} onViewDetailed={() => setActiveTab('tasks')} />
 
             {/* Kanban section below stats on Dashboard tab */}
             <div className="space-y-4">
@@ -94,10 +95,10 @@ const Dashboard = ({
                   onChange={(e) => setPriorityFilter(e.target.value)}
                   className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer"
                 >
-                  <option value="all">All Priorities</option>
-                  <option value="high">🔴 High</option>
-                  <option value="medium">🟡 Medium</option>
-                  <option value="low">🟢 Low</option>
+                  <option value="all" className="bg-[#1e293b] text-slate-200">🌐 All Priorities</option>
+                  <option value="high" className="bg-[#1e293b] text-slate-200">🔴 High</option>
+                  <option value="medium" className="bg-[#1e293b] text-slate-200">🟡 Medium</option>
+                  <option value="low" className="bg-[#1e293b] text-slate-200">🟢 Low</option>
                 </select>
               </div>
             </div>

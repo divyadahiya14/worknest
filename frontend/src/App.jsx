@@ -228,6 +228,7 @@ const App = () => {
           onTaskMove={handleTaskMove}
           onDeleteTask={handleDeleteTask}
           searchQuery={searchQuery}
+          setActiveTab={setActiveTab}
         />
       </div>
 

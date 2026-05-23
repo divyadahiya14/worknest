@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layers, ListTodo, Activity, CheckCircle, ArrowUpRight } from 'lucide-react';
 
-const DashboardCards = ({ tasks = [] }) => {
+const DashboardCards = ({ tasks = [], onViewDetailed }) => {
   // Aggregate task statistics
   const totalCount = tasks.length;
   const todoCount = tasks.filter(t => t.status === 'todo').length;
@@ -95,7 +95,10 @@ const DashboardCards = ({ tasks = [] }) => {
             {/* Bottom row descriptions */}
             <div className="mt-3 flex items-center justify-between text-[10px] text-slate-500">
               <span>{card.description}</span>
-              <span className="flex items-center text-slate-400 font-medium hover:text-slate-300 cursor-pointer">
+              <span
+                onClick={onViewDetailed}
+                className="flex items-center text-slate-400 font-medium hover:text-slate-300 cursor-pointer"
+              >
                 View detailed
                 <ArrowUpRight className="h-3 w-3 ml-0.5" />
               </span>

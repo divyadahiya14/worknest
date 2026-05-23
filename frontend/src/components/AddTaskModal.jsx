@@ -139,9 +139,9 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
                 onChange={(e) => setPriority(e.target.value)}
                 className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-xl py-2.5 px-3 text-xs text-slate-200 transition-all appearance-none cursor-pointer disabled:opacity-50"
               >
-                <option value="low">🟢 Low</option>
-                <option value="medium">🟡 Medium</option>
-                <option value="high">🔴 High</option>
+                <option value="low" className="bg-[#1e293b] text-slate-200">🟢 Low</option>
+                <option value="medium" className="bg-[#1e293b] text-slate-200">🟡 Medium</option>
+                <option value="high" className="bg-[#1e293b] text-slate-200">🔴 High</option>
               </select>
             </div>
 
