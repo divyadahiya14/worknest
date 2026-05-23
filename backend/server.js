@@ -30,7 +30,7 @@ app.use('/api/users', userRoutes);
 app.get('/', (req, res) => {
   res.json({
     status: 'online',
-    message: 'TaskNest MERN SaaS API Server is running smoothly',
+    message: 'Worknest MERN SaaS API Server is running smoothly',
     timestamp: new Date().toISOString()
   });
 });
@@ -44,6 +44,6 @@ app.use((err, req, res, next) => {
 // Start listening
 app.listen(PORT, () => {
   console.log(`\n======================================================`);
-  console.log(`\x1b[35m[TaskNest Server Active]: http://localhost:${PORT}\x1b[0m`);
+  console.log(`\x1b[35m[Worknest Server Active]: http://localhost:${PORT}\x1b[0m`);
   console.log(`======================================================\n`);
 });

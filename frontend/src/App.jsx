@@ -20,12 +20,12 @@ const App = () => {
 
   // Check if session is persisted in local storage on load
   useEffect(() => {
-    const savedUser = localStorage.getItem('tasknest_user');
+    const savedUser = localStorage.getItem('worknest_user');
     if (savedUser) {
       try {
         setCurrentUser(JSON.parse(savedUser));
       } catch (e) {
-        localStorage.removeItem('tasknest_user');
+        localStorage.removeItem('worknest_user');
       }
     }
   }, []);
@@ -66,7 +66,7 @@ const App = () => {
   // Login handler
   const handleLogin = (userData) => {
     setCurrentUser(userData);
-    localStorage.setItem('tasknest_user', JSON.stringify(userData));
+    localStorage.setItem('worknest_user', JSON.stringify(userData));
     triggerToast('Welcome to your premium dashboard workspace!', 'success');
   };
 
@@ -79,7 +79,7 @@ const App = () => {
   // Logout handler
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('tasknest_user');
+    localStorage.removeItem('worknest_user');
     setAuthView('login');
     triggerToast('Logged out of workspace.', 'info');
   };

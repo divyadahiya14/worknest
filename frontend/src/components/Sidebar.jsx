@@ -18,7 +18,7 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout, currentUser }) => {
         </div>
         <div>
           <h1 className="font-bold text-slate-100 text-lg tracking-wider bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-            TaskNest
+            Worknest
           </h1>
           <span className="text-[10px] text-slate-500 font-semibold tracking-widest uppercase">
             Worknest OS

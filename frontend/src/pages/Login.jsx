@@ -50,7 +50,7 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
             <Sparkles className="h-6 w-6" />
           </div>
           <h2 className="text-xl font-bold text-slate-100 tracking-wide">
-            Welcome to TaskNest
+            Welcome to Worknest
           </h2>
           <p className="text-xs text-slate-500 mt-1.5 font-medium">
             Enter your credentials to access your workspace
