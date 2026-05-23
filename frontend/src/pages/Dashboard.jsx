@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import DashboardCards from '../components/DashboardCards';
 import KanbanBoard from '../components/KanbanBoard';
-import { Users, Code2, Globe, Database, ToggleLeft, UserCheck, Shield, Sliders } from 'lucide-react';
+import TeamCard from '../components/TeamCard';
+import { Users, Code2, Globe, Database, ToggleLeft, UserCheck, Shield, Sliders, UserPlus } from 'lucide-react';
 
 const Dashboard = ({
   tasks = [],
@@ -11,7 +12,10 @@ const Dashboard = ({
   onTaskMove,
   onDeleteTask,
   searchQuery,
-  setActiveTab
+  setActiveTab,
+  teamMembers = [],
+  onRemoveMember,
+  onInviteClick
 }) => {
   const [priorityFilter, setPriorityFilter] = useState('all');
 
@@ -114,35 +118,47 @@ const Dashboard = ({
         );
 
       case 'team':
-        // Modern mock developer team roster
-        const members = [
-          { name: 'Sarah Connor', role: 'Lead Architect', tag: 'Architect', email: 's.connor@worknest.com', avatar: 'SC', color: 'bg-indigo-500/20 text-indigo-300' },
-          { name: 'Alex Mercer', role: 'Senior MERN Developer', tag: 'Backend', email: 'a.mercer@worknest.com', avatar: 'AM', color: 'bg-cyan-500/20 text-cyan-300' },
-          { name: 'David Miller', role: 'UI/UX Design Director', tag: 'Design', email: 'd.miller@worknest.com', avatar: 'DM', color: 'bg-amber-500/20 text-amber-300' },
-          { name: 'Chloe Frazier', role: 'MERN Developer Intern (You!)', tag: 'Frontend', email: 'c.frazier@worknest.com', avatar: 'CF', color: 'bg-emerald-500/20 text-emerald-300' },
-        ];
         return (
-          <div className="space-y-6">
-            <div className="bg-[#1e293b]/30 p-5 rounded-2xl border border-slate-800">
-              <h2 className="text-base font-bold text-slate-200">Active Workspace Team</h2>
-              <p className="text-xs text-slate-400 mt-1">Four members currently active in this workspace.</p>
+          <div className="space-y-6 animate-fade-in">
+            {/* Elegant Header Panel with Invite trigger */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#1e293b]/30 p-5 rounded-2xl border border-slate-800">
+              <div>
+                <h2 className="text-base font-bold text-slate-200">Active Workspace Team</h2>
+                <p className="text-xs text-slate-400 mt-1">Manage and collaborate with team members in this workspace.</p>
+              </div>
+              <button
+                onClick={onInviteClick}
+                className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 active:scale-95 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/25 transition-all duration-200"
+              >
+                <UserPlus className="h-4 w-4" />
+                Invite Member
+              </button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-              {members.map((m, idx) => (
-                <div key={idx} className="bg-[#1e293b]/45 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 hover:bg-[#1e293b]/60 transition-all text-center">
-                  <div className={`w-12 h-12 rounded-full mx-auto ${m.color} flex items-center justify-center font-bold mb-3 border border-current/20`}>
-                    {m.avatar}
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-200">{m.name}</h4>
-                  <p className="text-[10px] text-indigo-400 font-semibold mt-0.5">{m.role}</p>
-                  <span className="inline-block mt-3 text-[9px] bg-slate-800/80 border border-slate-700 text-slate-400 px-2 py-0.5 rounded-full font-bold uppercase">
-                    {m.tag}
-                  </span>
-                  <p className="text-[10px] text-slate-500 mt-3 truncate">{m.email}</p>
+            {teamMembers.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                {teamMembers.map((member) => (
+                  <TeamCard
+                    key={member.email}
+                    member={member}
+                    onRemove={onRemoveMember}
+                  />
+                ))}
+              </div>
+            ) : (
+              /* High-fidelity Empty Team Panel */
+              <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-800/40 rounded-3xl py-20 px-4 text-center select-none bg-slate-900/10">
+                <div className="p-4 bg-[#1e293b]/55 border border-slate-850 rounded-2xl text-slate-500 mb-4">
+                  <Users className="h-6 w-6" />
                 </div>
-              ))}
-            </div>
+                <h4 className="text-slate-350 font-bold text-sm tracking-wide">
+                  No Team Members Found
+                </h4>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed mt-1">
+                  Your workspace squad is empty. Click the "Invite Member" button to add your developers and designers!
+                </p>
+              </div>
+            )}
           </div>
         );
 

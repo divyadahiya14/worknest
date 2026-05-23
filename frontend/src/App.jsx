@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AddTaskModal from './components/AddTaskModal';
+import InviteMemberModal from './components/InviteMemberModal';
 import { taskService } from './services/api';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
@@ -17,6 +18,8 @@ const App = () => {
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [toasts, setToasts] = useState([]);
 
   // Check if session is persisted in local storage on load
@@ -28,6 +31,25 @@ const App = () => {
       } catch (e) {
         localStorage.removeItem('worknest_user');
       }
+    }
+
+    // Load or seed team members state
+    const defaultTeam = [
+      { name: 'Sarah Connor', role: 'Product Manager', email: 's.connor@worknest.com' },
+      { name: 'Alex Mercer', role: 'Backend Developer', email: 'a.mercer@worknest.com' },
+      { name: 'David Miller', role: 'UI/UX Designer', email: 'd.miller@worknest.com' },
+      { name: 'Chloe Frazier', role: 'Frontend Developer', email: 'c.frazier@worknest.com' }
+    ];
+    const savedTeam = localStorage.getItem('worknest_team');
+    if (savedTeam) {
+      try {
+        setTeamMembers(JSON.parse(savedTeam));
+      } catch (e) {
+        setTeamMembers(defaultTeam);
+      }
+    } else {
+      setTeamMembers(defaultTeam);
+      localStorage.setItem('worknest_team', JSON.stringify(defaultTeam));
     }
   }, []);
 
@@ -101,6 +123,31 @@ const App = () => {
   const handleSignupSuccess = (data) => {
     setAuthView('login');
     triggerToast('Account registered successfully! Please log in.', 'success');
+  };
+
+  // Invite team member handler
+  const handleInviteMember = (memberData) => {
+    const emailExists = teamMembers.some(m => m.email.toLowerCase() === memberData.email.toLowerCase());
+    if (emailExists) {
+      triggerToast('Email address is already in team roster!', 'warning');
+      return;
+    }
+    const updatedTeam = [...teamMembers, memberData];
+    setTeamMembers(updatedTeam);
+    localStorage.setItem('worknest_team', JSON.stringify(updatedTeam));
+    setIsInviteModalOpen(false);
+    triggerToast(`Invited ${memberData.name} to the team!`, 'success');
+  };
+
+  // Remove team member handler
+  const handleRemoveMember = (email, name) => {
+    const confirmRemove = window.confirm(`Are you sure you want to remove ${name} from the workspace team?`);
+    if (!confirmRemove) return;
+
+    const updatedTeam = teamMembers.filter(m => m.email !== email);
+    setTeamMembers(updatedTeam);
+    localStorage.setItem('worknest_team', JSON.stringify(updatedTeam));
+    triggerToast(`Removed ${name} from workspace.`, 'success');
   };
 
   // Logout handler
@@ -229,6 +276,9 @@ const App = () => {
           onDeleteTask={handleDeleteTask}
           searchQuery={searchQuery}
           setActiveTab={setActiveTab}
+          teamMembers={teamMembers}
+          onRemoveMember={handleRemoveMember}
+          onInviteClick={() => setIsInviteModalOpen(true)}
         />
       </div>
 
@@ -237,6 +287,13 @@ const App = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleAddTask}
+      />
+
+      {/* Invite Member Modal overlay popup */}
+      <InviteMemberModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onSubmit={handleInviteMember}
       />
 
       {/* Absolute Toast Notifications Drawer */}
