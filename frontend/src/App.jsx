@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import AddTaskModal from './components/AddTaskModal';
 import { taskService } from './services/api';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
@@ -10,6 +11,7 @@ import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 const App = () => {
   // Global States
   const [currentUser, setCurrentUser] = useState(null);
+  const [authView, setAuthView] = useState('login'); // 'login' | 'signup'
   const [activeTab, setActiveTab] = useState('dashboard');
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,13 +67,20 @@ const App = () => {
   const handleLogin = (userData) => {
     setCurrentUser(userData);
     localStorage.setItem('tasknest_user', JSON.stringify(userData));
-    triggerToast('Successfully accessed dashboard workspace!', 'success');
+    triggerToast('Welcome to your premium dashboard workspace!', 'success');
+  };
+
+  // Signup success callback
+  const handleSignupSuccess = (data) => {
+    setAuthView('login');
+    triggerToast('Account registered successfully! Please log in.', 'success');
   };
 
   // Logout handler
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('tasknest_user');
+    setAuthView('login');
     triggerToast('Logged out of workspace.', 'info');
   };
 
@@ -148,9 +157,19 @@ const App = () => {
     }
   };
 
-  // If session is empty, render the Login flow page
+  // If session is empty, render the Login/Signup screen flows
   if (!currentUser) {
-    return <Login onLogin={handleLogin} />;
+    return authView === 'login' ? (
+      <Login
+        onLogin={handleLogin}
+        onNavigateToSignup={() => setAuthView('signup')}
+      />
+    ) : (
+      <Signup
+        onSignupSuccess={handleSignupSuccess}
+        onNavigateToLogin={() => setAuthView('login')}
+      />
+    );
   }
 
   return (

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Sparkles, Mail, Lock, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, ShieldCheck, ShieldAlert, ArrowRight, UserPlus } from 'lucide-react';
 import { authService } from '../services/api';
 
-const Login = ({ onLogin, onNavigateToSignup }) => {
+const Signup = ({ onSignupSuccess, onNavigateToLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -12,8 +13,8 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
     e.preventDefault();
     setError('');
 
-    if (!email || !password) {
-      setError('Please fill in all credentials fields.');
+    if (!email || !password || !confirmPassword) {
+      setError('Please fill in all registration fields.');
       return;
     }
 
@@ -22,12 +23,21 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
       return;
     }
 
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please verify.');
+      return;
+    }
+
     setLoading(true);
     try {
-      // Connect to true Express backend database auth endpoint
-      const data = await authService.login(email, password);
+      const data = await authService.signup(email, password);
       setLoading(false);
-      onLogin({ email: data.email, _id: data._id });
+      onSignupSuccess({ email, message: data.message });
     } catch (err) {
       setLoading(false);
       const errMsg = err.response?.data?.message || 'Connection failed to auth server.';
@@ -37,23 +47,23 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
 
   return (
     <div className="min-h-screen bg-[#070a13] flex flex-col justify-center items-center p-4 relative overflow-hidden">
-      {/* Decorative background gradients */}
+      {/* Visual backgrounds glow */}
       <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] rounded-full bg-violet-600/10 blur-[100px] pointer-events-none"></div>
 
-      {/* Glass card container */}
+      {/* Main glass block */}
       <div className="w-full max-w-md bg-[#0f172a]/55 border border-slate-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl z-10 select-none transform transition-all duration-300">
         
-        {/* Header Branding */}
+        {/* Banner Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="bg-indigo-600 p-3 rounded-2xl text-white shadow-lg shadow-indigo-600/20 mb-3 flex items-center justify-center">
-            <Sparkles className="h-6 w-6" />
+            <UserPlus className="h-6 w-6" />
           </div>
           <h2 className="text-xl font-bold text-slate-100 tracking-wide">
-            Welcome to TaskNest
+            Create Account
           </h2>
-          <p className="text-xs text-slate-500 mt-1.5 font-medium">
-            Enter your credentials to access your workspace
+          <p className="text-xs text-slate-500 mt-1.5 font-medium text-center">
+            Register your email to unlock your personal workspace board
           </p>
         </div>
 
@@ -65,7 +75,7 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email input field */}
+          {/* Email field */}
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
               Email Address
@@ -88,16 +98,11 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
             </div>
           </div>
 
-          {/* Password input field */}
+          {/* Password field */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Password
-              </label>
-              <a href="#forgot" className="text-[10px] font-semibold text-indigo-400 hover:text-indigo-300">
-                Forgot password?
-              </a>
-            </div>
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              Password (6+ characters)
+            </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
                 <Lock className="h-4 w-4" />
@@ -116,7 +121,30 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
             </div>
           </div>
 
-          {/* Login Submit button */}
+          {/* Confirm Password field */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              <input
+                type="password"
+                placeholder="••••••••••••"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (error) setError('');
+                }}
+                className="w-full bg-[#070a13]/70 border border-slate-800 hover:border-slate-700/80 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 rounded-xl py-3 pl-11 pr-4 text-xs text-slate-200 placeholder-slate-600 transition-all duration-200"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Submit register button */}
           <button
             type="submit"
             disabled={loading}
@@ -126,7 +154,7 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
             ) : (
               <>
-                Access Dashboard
+                Register Account
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
@@ -136,12 +164,12 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
         {/* Navigation toggle */}
         <div className="mt-8 pt-6 border-t border-slate-800/40 text-center">
           <p className="text-xs text-slate-400">
-            Don't have an account yet?{' '}
+            Already have an account?{' '}
             <button
-              onClick={onNavigateToSignup}
+              onClick={onNavigateToLogin}
               className="font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
             >
-              Sign Up
+              Sign In
             </button>
           </p>
         </div>
@@ -150,4 +178,4 @@ const Login = ({ onLogin, onNavigateToSignup }) => {
   );
 };
 
-export default Login;
+export default Signup;

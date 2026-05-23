@@ -35,4 +35,18 @@ export const taskService = {
   }
 };
 
+export const authService = {
+  // Register a new user
+  signup: async (email, password) => {
+    const response = await api.post('/users/signup', { email, password });
+    return response.data;
+  },
+
+  // Authenticate user credentials
+  login: async (email, password) => {
+    const response = await api.post('/users/login', { email, password });
+    return response.data;
+  }
+};
+
 export default api;

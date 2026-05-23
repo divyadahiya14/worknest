@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const taskRoutes = require('./routes/taskRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Initialize express app
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.json());
 
 // API Routes
 app.use('/api/tasks', taskRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
