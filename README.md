@@ -4,31 +4,15 @@
 
 ---
 
-## 📸 Screenshots Placeholders
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9a1c1305-cdb7-4b8b-ae12-d775a6e33fa1" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c0be1c4b-092f-4abe-8469-1db966728d11" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4a6712f7-b371-420a-b311-a30d83102164" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8a373163-53d2-45fc-a97f-54eca3ebb276" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/179e66f5-da65-4eaf-a54d-8d73c913cc54" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e78cbadb-4a88-40e4-996b-087f84dcb4c3" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/70133ee2-bc66-4334-b86f-2af34e9822ed" />
 
-### Glassmorphic Workspace Portal
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                       Welcome to Worknest                   │
-│                                                             │
-│              Email:    [ developer@worknest.com ]           │
-│              Password: [ •••••••••••••• ]                   │
-│                                                             │
-│                    [ Access Dashboard  → ]                  │
-└─────────────────────────────────────────────────────────────┘
-```
 
-### Modern Active Kanban Board
-```text
-┌─────────────────────────────────────────────────────────────┐
-│ 👤 Chloe Frazier (Intern) | Worknest OS | [ + Create Task ]  │
-├───────────────┬──────────────────────────────┬──────────────┤
-│    TO DO (2)  │        IN PROGRESS (1)       │   DONE (1)   │
-├───────────────┼──────────────────────────────┼──────────────┤
-│ 🟢 Low task   │ 🟡 Medium task (Today)       │ 🔴 High task │
-│ 🔴 High task  │                              │              │
-└───────────────┴──────────────────────────────┴──────────────┘
-```
 
 ---
 
