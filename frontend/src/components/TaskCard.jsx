@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, Trash2, ChevronRight, AlertCircle } from 'lucide-react';
 
 const TaskCard = ({ task, onDelete, onDragStart }) => {
-  const { _id, title, description, priority, dueDate } = task;
+  const { _id, title, description, priority, dueDate, status } = task;
 
   // Priority color tags and labels mapping
   const getPriorityConfig = (priorityLevel) => {
@@ -20,7 +20,7 @@ const TaskCard = ({ task, onDelete, onDragStart }) => {
           label: 'Medium Priority'
         };
       case 'low':
-        default:
+      default:
         return {
           bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
           dot: 'bg-emerald-500 shadow-emerald-500/50',
@@ -30,6 +30,49 @@ const TaskCard = ({ task, onDelete, onDragStart }) => {
   };
 
   const priorityStyle = getPriorityConfig(priority);
+
+  // Due date highlights checker
+  const getDueDateConfig = (dueDateStr, taskStatus) => {
+    if (!dueDateStr || taskStatus === 'done') {
+      return {
+        cardBorder: 'border-slate-800/80 hover:border-slate-700/80',
+        textClass: 'text-slate-500',
+        isWarning: false
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const taskDate = new Date(dueDateStr);
+    taskDate.setHours(0, 0, 0, 0);
+
+    if (taskDate.getTime() < today.getTime()) {
+      return {
+        cardBorder: 'border-rose-500/40 hover:border-rose-500/60 shadow-lg shadow-rose-950/15',
+        textClass: 'text-rose-400 font-semibold',
+        iconClass: 'text-rose-400 animate-pulse',
+        isWarning: true,
+        label: 'Overdue'
+      };
+    } else if (taskDate.getTime() === today.getTime()) {
+      return {
+        cardBorder: 'border-amber-500/40 hover:border-amber-500/60 shadow-lg shadow-amber-950/10',
+        textClass: 'text-amber-400 font-semibold',
+        iconClass: 'text-amber-400',
+        isWarning: true,
+        label: 'Due Today'
+      };
+    }
+
+    return {
+      cardBorder: 'border-slate-800/80 hover:border-slate-700/80',
+      textClass: 'text-slate-500',
+      isWarning: false
+    };
+  };
+
+  const dueConfig = getDueDateConfig(dueDate, status);
 
   // Triggered when dragging begins
   const handleDragStart = (e) => {
@@ -44,7 +87,7 @@ const TaskCard = ({ task, onDelete, onDragStart }) => {
     <div
       draggable
       onDragStart={handleDragStart}
-      className="task-card bg-[#1e293b]/70 hover:bg-[#1e293b] border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-4 cursor-grab active:cursor-grabbing select-none relative group"
+      className={`task-card bg-[#1e293b]/70 hover:bg-[#1e293b] border rounded-2xl p-4 cursor-grab active:cursor-grabbing select-none relative group ${dueConfig.cardBorder}`}
     >
       {/* Upper badge row */}
       <div className="flex items-center justify-between mb-3">
@@ -81,10 +124,15 @@ const TaskCard = ({ task, onDelete, onDragStart }) => {
 
       {/* Footer Info (Due date) */}
       <div className="flex items-center justify-between text-[10px] text-slate-500">
-        <span className="flex items-center gap-1">
-          <Calendar className="h-3.5 w-3.5 text-slate-500" />
+        <span className={`flex items-center gap-1.5 ${dueConfig.textClass}`}>
+          {dueConfig.isWarning ? (
+            <AlertCircle className={`h-3.5 w-3.5 ${dueConfig.iconClass}`} />
+          ) : (
+            <Calendar className="h-3.5 w-3.5 text-slate-500" />
+          )}
           <span>
             {dueDate ? new Date(dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No due date'}
+            {dueConfig.isWarning && ` (${dueConfig.label})`}
           </span>
         </span>
 

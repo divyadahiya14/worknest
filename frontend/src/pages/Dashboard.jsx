@@ -5,6 +5,7 @@ import { Users, Code2, Globe, Database, ToggleLeft, UserCheck, Shield, Sliders }
 
 const Dashboard = ({
   tasks = [],
+  isLoading = false,
   activeTab,
   onAddTaskClick,
   onTaskMove,
@@ -68,6 +69,7 @@ const Dashboard = ({
               </div>
               <KanbanBoard
                 tasks={filteredTasks}
+                isLoading={isLoading}
                 onAddTaskClick={onAddTaskClick}
                 onTaskMove={onTaskMove}
                 onDeleteTask={onDeleteTask}
@@ -102,6 +104,7 @@ const Dashboard = ({
 
             <KanbanBoard
               tasks={filteredTasks}
+              isLoading={isLoading}
               onAddTaskClick={onAddTaskClick}
               onTaskMove={onTaskMove}
               onDeleteTask={onDeleteTask}

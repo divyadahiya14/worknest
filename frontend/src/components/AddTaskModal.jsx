@@ -7,6 +7,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
   const [priority, setPriority] = useState('medium');
   const [dueDate, setDueDate] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle keyboard listener for escape key
   useEffect(() => {
@@ -21,13 +22,14 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
       setPriority('medium');
       setDueDate('');
       setError('');
+      setIsSubmitting(false);
     }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
       setError('Task title is required');
@@ -42,7 +44,14 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
       dueDate
     };
 
-    onSubmit(taskData);
+    setIsSubmitting(true);
+    try {
+      await onSubmit(taskData);
+      setIsSubmitting(false);
+    } catch (err) {
+      setIsSubmitting(false);
+      setError('Failed to save task to backend.');
+    }
   };
 
   return (
@@ -67,7 +76,8 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-200 hover:bg-slate-800 p-1.5 rounded-lg transition-all"
+            disabled={isSubmitting}
+            className="text-slate-500 hover:text-slate-200 hover:bg-slate-800 p-1.5 rounded-lg transition-all disabled:opacity-50"
           >
             <X className="h-4 w-4" />
           </button>
@@ -91,11 +101,12 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               type="text"
               placeholder="e.g. Set up auth routes"
               value={title}
+              disabled={isSubmitting}
               onChange={(e) => {
                 setTitle(e.target.value);
                 if (e.target.value.trim()) setError('');
               }}
-              className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 rounded-xl py-2.5 px-4 text-xs text-slate-200 placeholder-slate-600 transition-all"
+              className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 rounded-xl py-2.5 px-4 text-xs text-slate-200 placeholder-slate-600 transition-all disabled:opacity-50"
               required
             />
           </div>
@@ -108,9 +119,10 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
             <textarea
               placeholder="Provide a short description of the objective..."
               value={description}
+              disabled={isSubmitting}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 rounded-xl py-2.5 px-4 text-xs text-slate-200 placeholder-slate-600 transition-all resize-none"
+              className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 rounded-xl py-2.5 px-4 text-xs text-slate-200 placeholder-slate-600 transition-all resize-none disabled:opacity-50"
             />
           </div>
 
@@ -123,8 +135,9 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               </label>
               <select
                 value={priority}
+                disabled={isSubmitting}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-xl py-2.5 px-3 text-xs text-slate-200 transition-all appearance-none cursor-pointer"
+                className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-xl py-2.5 px-3 text-xs text-slate-200 transition-all appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="low">🟢 Low</option>
                 <option value="medium">🟡 Medium</option>
@@ -140,8 +153,9 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               <input
                 type="date"
                 value={dueDate}
+                disabled={isSubmitting}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-xl py-2.5 px-4 text-xs text-slate-200 cursor-pointer transition-all"
+                className="w-full bg-[#0f172a] border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none rounded-xl py-2.5 px-4 text-xs text-slate-200 cursor-pointer transition-all disabled:opacity-50"
               />
             </div>
           </div>
@@ -151,15 +165,24 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-slate-700/60 hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-slate-100 transition-all"
+              disabled={isSubmitting}
+              className="px-5 py-2.5 rounded-xl border border-slate-700/60 hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-slate-100 transition-all disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 text-xs font-semibold text-white shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/30 transition-all duration-200 active:scale-95"
+              disabled={isSubmitting}
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-750 disabled:opacity-50 text-xs font-semibold text-white shadow-lg shadow-indigo-600/10 hover:shadow-indigo-600/30 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
             >
-              Add Task
+              {isSubmitting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Saving...
+                </>
+              ) : (
+                'Add Task'
+              )}
             </button>
           </div>
         </form>

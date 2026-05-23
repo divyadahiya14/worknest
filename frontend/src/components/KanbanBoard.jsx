@@ -1,8 +1,27 @@
 import React, { useState } from 'react';
 import TaskCard from './TaskCard';
-import { Plus, ListTodo, Activity, CheckCircle2 } from 'lucide-react';
+import { Plus, ListTodo, Activity, CheckCircle2, FolderOpen } from 'lucide-react';
 
-const KanbanBoard = ({ tasks = [], onAddTaskClick, onTaskMove, onDeleteTask }) => {
+// Pulses skeleton loader template card
+const SkeletonCard = () => (
+  <div className="bg-[#1e293b]/40 border border-slate-800/60 rounded-2xl p-4 animate-pulse space-y-3 select-none">
+    <div className="flex justify-between items-center">
+      <div className="w-16 h-3.5 bg-slate-700/60 rounded-full"></div>
+      <div className="w-5 h-5 bg-slate-700/60 rounded-md"></div>
+    </div>
+    <div className="w-2/3 h-4 bg-slate-700/50 rounded-md mt-2"></div>
+    <div className="space-y-1.5 pt-1">
+      <div className="w-full h-2.5 bg-slate-700/40 rounded-md"></div>
+      <div className="w-5/6 h-2.5 bg-slate-700/40 rounded-md"></div>
+    </div>
+    <div className="border-t border-slate-800/40 my-2 pt-2.5 flex justify-between items-center">
+      <div className="w-1/3 h-2.5 bg-slate-700/40 rounded-md"></div>
+      <div className="w-8 h-2.5 bg-slate-700/40 rounded-md"></div>
+    </div>
+  </div>
+);
+
+const KanbanBoard = ({ tasks = [], onAddTaskClick, onTaskMove, onDeleteTask, isLoading = false }) => {
   // Columns structure
   const columns = [
     {
@@ -86,7 +105,7 @@ const KanbanBoard = ({ tasks = [], onAddTaskClick, onTaskMove, onDeleteTask }) =
                   {col.title}
                 </h3>
                 <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-400 font-semibold">
-                  {columnTasks.length}
+                  {isLoading ? '...' : columnTasks.length}
                 </span>
               </div>
 
@@ -104,7 +123,14 @@ const KanbanBoard = ({ tasks = [], onAddTaskClick, onTaskMove, onDeleteTask }) =
 
             {/* Task Card List Container */}
             <div className="flex-1 overflow-y-auto space-y-3.5 pr-1 py-1">
-              {columnTasks.length > 0 ? (
+              {isLoading ? (
+                /* Pulse loaders during initial API fetch */
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              ) : columnTasks.length > 0 ? (
                 columnTasks.map((task) => (
                   <TaskCard
                     key={task._id}
@@ -113,16 +139,19 @@ const KanbanBoard = ({ tasks = [], onAddTaskClick, onTaskMove, onDeleteTask }) =
                   />
                 ))
               ) : (
-                /* Empty Column Placeholder */
-                <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-800/50 rounded-2xl py-12 px-4 text-center select-none">
-                  <div className="text-slate-600 font-medium text-xs mb-1">
-                    No Tasks Here
+                /* Premium Empty Column state layout */
+                <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-800/40 hover:border-slate-700/40 rounded-2xl py-14 px-4 text-center select-none transition-all duration-300 group/empty hover:bg-slate-900/10">
+                  <div className="p-3 bg-[#1e293b]/40 border border-slate-800/50 rounded-2xl text-slate-600 group-hover/empty:text-indigo-400 group-hover/empty:scale-110 group-hover/empty:border-indigo-500/25 transition-all duration-300 mb-3 shadow-inner">
+                    <FolderOpen className="h-5 w-5" />
                   </div>
-                  <div className="text-[10px] text-slate-500 max-w-[150px] mx-auto leading-normal">
+                  <h4 className="text-slate-400 font-semibold text-xs mb-1 tracking-wide">
+                    No Tasks Found
+                  </h4>
+                  <p className="text-[10px] text-slate-500 max-w-[170px] mx-auto leading-normal">
                     {col.id === 'todo'
-                      ? 'Click the plus or navbar button to start.'
-                      : 'Drag a card here to update status.'}
-                  </div>
+                      ? 'Click the plus or navbar button to create your first task!'
+                      : 'Drag a card here to update task sprint progress.'}
+                  </p>
                 </div>
               )}
             </div>
@@ -134,3 +163,4 @@ const KanbanBoard = ({ tasks = [], onAddTaskClick, onTaskMove, onDeleteTask }) =
 };
 
 export default KanbanBoard;
+

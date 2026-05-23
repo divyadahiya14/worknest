@@ -14,6 +14,7 @@ const App = () => {
   const [authView, setAuthView] = useState('login'); // 'login' | 'signup'
   const [activeTab, setActiveTab] = useState('dashboard');
   const [tasks, setTasks] = useState([]);
+  const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toasts, setToasts] = useState([]);
@@ -39,14 +40,40 @@ const App = () => {
 
   // Load tasks from Express backend
   const loadTasks = async () => {
+    setIsLoadingTasks(true);
     try {
       const data = await taskService.fetchTasks();
       setTasks(data);
+      setIsLoadingTasks(false);
     } catch (error) {
       console.error('Failed to load tasks:', error);
       triggerToast('Could not fetch tasks. Operating in failover mock storage.', 'info');
+      setIsLoadingTasks(false);
     }
   };
+
+  // Global Keyboard Shortcuts (N -> open modal)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (isModalOpen) return;
+
+      const activeEl = document.activeElement;
+      const isTyping = activeEl && (
+        activeEl.tagName === 'INPUT' ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT' ||
+        activeEl.contentEditable === 'true'
+      );
+      if (isTyping) return;
+
+      if (e.key.toLowerCase() === 'n') {
+        e.preventDefault();
+        setIsModalOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
 
   // Toast triggers helper
   const triggerToast = (message, type = 'success') => {
@@ -195,6 +222,7 @@ const App = () => {
         {/* Dashboard Panels */}
         <Dashboard
           tasks={tasks}
+          isLoading={isLoadingTasks}
           activeTab={activeTab}
           onAddTaskClick={() => setIsModalOpen(true)}
           onTaskMove={handleTaskMove}
